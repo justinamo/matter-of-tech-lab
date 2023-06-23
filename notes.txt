@@ -1,0 +1,107 @@
+June 12, 2023
+
+- Experimented with different lighting sources: natural light, flash
+  and artificial light from the softbox. The softbox generated the 
+  best results, in terms of even lighting and lack of glare. With the
+  flash, there was a horizontal band of glare centered under the 
+  location of the flash, and with natural light, the lighting was 
+  very uneven. 
+
+- Tried automatically cropping out the dark background with opencv's
+  boundingRect but I found that manually cropping out in the 
+  background in the iPhone generated better results.
+
+- Tried different filters for isolating the age lines: sobel filters 
+  (edge detection), sharpening, and thresholds. Found that an adaptive
+  threshold worked best to contrast the age lines from the rest of the
+  wood grain. Using a mean threshold value generated better visual 
+  results than a gaussian threshold value, and using a large 
+  neighborhood size (1/3 to 1/2 of the dimensions of the image) 
+  generated better visual results. 
+
+- Worked on plotting adaptive threshold with different neighborhood 
+  sizes. More samples are needed to ensure we don't overfit to a 
+  single image. 
+
+
+June 13, 2023
+
+- Started today finding a way to score the effectiveness of the 
+  adaptive threshold filter in isolating the age lines of the 
+  original image. 
+  
+- My first thought is that we need to compare the processed image to 
+  the original image but it is not immediately clear how to do so. 
+  My first thought is to take small samples of the original image
+  and isolate the distribution of colors of the sample: if there is
+  more than one color, the darker colors are age lines or knots. Then
+  we can take the processed image and see how well the black pixels 
+  match up with the zones of darker colors in the image. If there 
+  are several black pixels in a zone with a lighter color, then 
+  that particular processed image will be penalized via the score. 
+  
+- I thought that if we just take the original image pixel by pixel, 
+  there's too much noise and the distribution of colors appears to be
+  approximately normal (because there's too many different 
+  intensities). So I had the idea to decrease the resolution of the 
+  sample for the original image, which decreases the number of 
+  unique intensity values and makes it more clear if there is 
+  bimodality in the distribution. 
+  
+- Mixed results for different regions in the wood. Cherry picking 
+  knots and distinct age lines the low resolution method appeared to
+  find the darker areas very well, but for more low contrast age lines
+  it was less clear. 
+  
+June 14, 2023
+
+- Decided to nix the scoring for now as I felt like I was just 
+  recreating what I did with the adaptive threshold.
+
+- Played around with the laser cutter and tried different lighting 
+  approaches, including the what Amrit suggested where 2 pictures are
+  taken, one with artificial light, and one with natural light, and 
+  subtracting the natural light from the artificially lit image. 
+  Didn't work too well because my iPhone changes the exposure based 
+  on how bright the scene is, so the natural light changes intensity 
+  from the naturally lit to artificially lit picture. 
+  
+- Also toyed with seeing how irregularities in the wood affected the
+  laser cutter. The results were less dramatic than I thought but 
+  there were definitely imperfections compared to a clear area of 
+  wood. Made a souvenir to take home (my name engraved in a rect). 
+  
+June 15, 2023
+
+- Worked on seeing if I could clean up the adaptive threshold a 
+  little bit. I noticed that there tended to be sparsely 
+  distributed dark pixels in the cuttable parts of wood, and more 
+  densely clustered dark pixels around the noncuttable parts. I tried
+  an algorithm to remove pixels if the number of dark pixel neighbors
+  exceeded a certain amount, which certainly did clean up the 
+  cuttable parts of the wood but also seemed to remove about half of
+  the age lines. The knots and dark spots were unaffected, which is 
+  good because the filter was doing a great job of identifying them
+  before. 
+  
+June 16, 2023  
+
+- Worked on choosing a python svg library. Thijs also shared some 
+  example svg files, which was very helpful. I ended up going with 
+  svgpathtools because they seemed to have the most control to 
+  manipulate the svg in python. Spent the whole day working on how
+  parse individual cuts from different svgs, as the grouping of 
+  path elements in different svgs may not line up with a single cut
+  that a laser cutter would make. 
+  
+June 20, 2023
+
+- Wrote code to join individual svg path elements into continuous 
+  parts and also associate cuts together that would be part of the 
+  same piece of the finished product. For the latter, this mostly 
+  consisted of holes for box joints combined with the outer cut for
+  the piece. Also there is an issue with svgpathtools where transform
+  properties in the svg element aren't preserved, so that is 
+  something I need to work around. 
+  
+  
