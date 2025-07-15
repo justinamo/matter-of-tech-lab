@@ -104,4 +104,13 @@ June 20, 2023
   properties in the svg element aren't preserved, so that is 
   something I need to work around. 
   
+July 3, 2023
+- success!
+- sanity check intersection detector with other svgs
+- start working on interactive editor
+- user doesn't care about knots in wood unless they intersect with 
+  their cuts
+- make bad cuts much more noticeable, perhaps by making the color 
+  brighter or thickening the line or something
+  
   
